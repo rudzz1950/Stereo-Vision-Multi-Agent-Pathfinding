@@ -1,0 +1,10 @@
+3D Multi-Agent Pathfinding Results
+==================================
+
+METRIC               | FAST (Baseline)    | CBS (Optimal)     
+------------------------------------------------------------
+Execution Time       | 1759.1 ms           | 1598.4 ms
+Total Flow Cost      | 189                | 189               
+Makespan             | 50                 | 50                
+Optimality           | No                 | Yes               
+------------------------------------------------------------
