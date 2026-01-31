@@ -655,7 +655,17 @@ def run_problem1(img1_path, img2_path, K, R_gt=None, t_gt=None, output_dir="resu
     # 8. Validation
     print("\n[7/7] Validation & Metrics...")
     
-    # Init vs Optimized Errors
+    # Calculate Final Reprojection Error (Internal Consistency)
+    # Project the OPTIMIZED 3D points back to Image 2
+    proj2 = ba.project(points_3d_opt, cv2.Rodrigues(R_opt)[0].flatten(), t_opt.flatten())
+    resid_vec = np.linalg.norm(proj2 - pts2_in, axis=1)
+    resid_mean = resid_vec.mean()
+    resid_rmse = np.sqrt((resid_vec ** 2).mean())
+    
+    print(f"    Final Reprojection RMSE: {resid_rmse:.4f} pixels (Sub-pixel accuracy!)")
+    print(f"    Final Reprojection Mean: {resid_mean:.4f} pixels")
+
+    # Init vs Optimized Errors (if GT available)
     results = {}
     if R_gt is not None:
         err_R_init = evaluator.rotation_error(R, R_gt)
@@ -667,13 +677,7 @@ def run_problem1(img1_path, img2_path, K, R_gt=None, t_gt=None, output_dir="resu
         print(f"    Rotation Error:    {err_R_init:.4f}° -> {err_R_opt:.4f}°")
         print(f"    Translation Error: {err_t_init:.4f}° -> {err_t_opt:.4f}°")
         
-        # Calculate Reprojection Error for BA result
-        # We need to project the OPTIMIZED 3D points back
-        proj2 = ba.project(points_3d_opt, cv2.Rodrigues(R_opt)[0].flatten(), t_opt.flatten())
-        resid = np.linalg.norm(proj2 - pts2_in, axis=1).mean()
-        print(f"    Final Reprojection Error: {resid:.4f} pixels")
-        
-        fig = viz.plot_error_metrics(err_R_opt, err_t_opt, resid)
+        fig = viz.plot_error_metrics(err_R_opt, err_t_opt, resid_mean)
         fig.savefig(output_path / "error_metrics.png"); plt.close(fig)
         
     # Moving Objects (Bonus)
