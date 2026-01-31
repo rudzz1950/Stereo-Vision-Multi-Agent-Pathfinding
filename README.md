@@ -1,4 +1,4 @@
-# Computer Vision & Pathfinding Research 🚀
+# Computer Vision & Pathfinding Research
 
 This repository contains my solutions for the **Vecros Technical Assignment**. It implements research-grade algorithms for Stereo Vision (Problem 1) and Multi-Agent Pathfinding (Problem 2).
 
